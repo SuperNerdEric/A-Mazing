@@ -1,11 +1,11 @@
 package com.example.eric.amazing;
 
+import android.app.Activity;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity {
+public class OpenGLES20Activity extends Activity {
 
     private GLSurfaceView mGLView;
 
@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Create a GLSurfaceView instance and set it
         // as the ContentView for this Activity.
-        mGLView = new MainActivity.MyGLSurfaceView(this);
+        mGLView = new MyGLSurfaceView(this);
         setContentView(mGLView);
     }
 
@@ -35,4 +35,6 @@ public class MainActivity extends AppCompatActivity {
             setRenderer(mRenderer);
         }
     }
+
+
 }
