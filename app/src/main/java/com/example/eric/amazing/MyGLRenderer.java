@@ -14,7 +14,8 @@ import javax.microedition.khronos.opengles.GL10;
 public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     private Triangle mTriangle;
-    private Square   mSquare;
+    private Square  mSquare;
+    private Maze mMaze;
 
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
         // Set the background frame color
@@ -24,6 +25,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mTriangle = new Triangle();
         // initialize a square
         mSquare = new Square();
+        // initialize a maze
+        mMaze = new Maze();
     }
 
     private float[] mRotationMatrix = new float[16];
@@ -33,6 +36,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
         mTriangle = new Triangle();
         float[] scratch = new float[16];
+
+        mMaze = new Maze();
+        float[] scratch2 = new float[16];
 
         // Set the camera position (View matrix)
         Matrix.setLookAtM(mViewMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
@@ -51,6 +57,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // Note that the mMVPMatrix factor *must be first* in order
         // for the matrix multiplication product to be correct.
         Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
+
+        Matrix.multiplyMM(scratch2, 0, mMVPMatrix, 0, mRotationMatrix, 0);
+
+        //Draw maze
+        mMaze.draw(scratch2);
 
         // Draw triangle
         mTriangle.draw(scratch);
