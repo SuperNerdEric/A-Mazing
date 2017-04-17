@@ -51,7 +51,7 @@ public class Maze {
     private short drawOrder[] = { 0, 1, 2, 0, 2, 3 }; // order to draw vertices
 
     // Set color with red, green, blue and alpha (opacity) values
-    float color[] = { 1.0f, 0.0f, 0.0f, 1.0f };
+    float color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
     private final int mProgram;
 
