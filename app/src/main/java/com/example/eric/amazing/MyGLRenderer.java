@@ -14,7 +14,6 @@ import javax.microedition.khronos.opengles.GL10;
 public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     private Triangle mTriangle;
-    private Square  mSquare;
     private Maze mMaze;
 
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
@@ -23,8 +22,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         // initialize a triangle
         mTriangle = new Triangle();
-        // initialize a square
-        mSquare = new Square();
+
         // initialize a maze
         mMaze = new Maze();
     }
