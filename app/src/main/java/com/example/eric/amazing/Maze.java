@@ -44,11 +44,15 @@ public class Maze {
     static float squareCoords[] = {   // in counterclockwise order:
             -0.5f,  0.5f, 0.0f,   // top left
             -0.5f, -0.5f, 0.0f,   // bottom left
+            -0.5f, -0.5f, 0.0f,   // bottom right
+            0.0f, -0.5f, 0.0f,   // bottom mid
             0.5f, -0.5f, 0.0f,   // bottom right
-            0.5f,  0.5f, 0.0f  // top right
+            0.5f,  0.5f, 0.0f,  // top right
+            0.5f,  0.5f, 0.0f,  // top left
+            0.0f,  0.5f, 0.0f,   // top mid
     };
 
-    private short drawOrder[] = { 0, 1, 2, 0, 2, 3 }; // order to draw vertices
+    private short drawOrder[] = { 0, 1, 2, 3, 4, 5, 6, 7}; // order to draw vertices
 
     // Set color with red, green, blue and alpha (opacity) values
     float color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
@@ -137,8 +141,10 @@ public class Maze {
         // Pass the projection and view transformation to the shader
         GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
 
+        GLES20.glLineWidth(30);
+
         // Draw the maze
-        GLES20.glDrawElements(GLES20.GL_TRIANGLES, drawOrder.length,
+        GLES20.glDrawElements(GLES20.GL_LINES, drawOrder.length,
                 GLES20.GL_UNSIGNED_SHORT, drawListBuffer);
 
         // Disable vertex array
