@@ -16,6 +16,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private Triangle mTriangle;
     private Maze mMaze;
 
+
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
         // Set the background frame color
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -53,8 +54,14 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         //Matrix.setRotateM(mRotationMatrix, 0, angle, 0, 0, -1.0f);
         Matrix.setRotateM(mRotationMatrix, 0, mAngle, 0, 0, -1.0f);
 
-        Matrix.setRotateM(mRotationMatrix2, 0, 0, 0, 0, -1.0f);
+        //Move the triangle to the maze entrance
         Matrix.translateM(mTriangle.mModelMatrix, 0, 0.4f, -0.6f, 0f);
+
+        //Move the triangle to the maze entrance
+        Matrix.translateM(mTriangle.mModelMatrix, 0, 0, mTranslate, 0f);
+        if(mTranslate<=1) {
+            mTranslate += 0.01f;
+        }
 
         // Combine the rotation matrix with the projection and camera view
         // Note that the mMVPMatrix factor *must be first* in order
@@ -117,4 +124,15 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public void setAngle(float angle) {
         mAngle = angle;
     }
+
+    private volatile float mTranslate;
+
+    public float getmTranslate() {
+        return mTranslate;
+    }
+
+    public void setmTranslate(float mTranslate) {
+        this.mTranslate = mTranslate;
+    }
+
 }
