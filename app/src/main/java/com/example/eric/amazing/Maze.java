@@ -40,16 +40,16 @@ public class Maze {
     private FloatBuffer vertexBuffer;
 
     // number of coordinates per vertex in this array
-    static final int COORDS_PER_VERTEX = 3;
-    static float squareCoords[] = {   // in counterclockwise order:
-            -0.5f,  0.5f, 0.0f,   // top left
-            -0.5f, -0.5f, 0.0f,   // bottom left
-            -0.5f, -0.5f, 0.0f,   // bottom right
-            0.0f, -0.5f, 0.0f,   // bottom mid
-            0.5f, -0.5f, 0.0f,   // bottom right
-            0.5f,  0.5f, 0.0f,  // top right
-            0.5f,  0.5f, 0.0f,  // top left
-            0.0f,  0.5f, 0.0f,   // top mid
+    static final int COORDS_PER_VERTEX = 2;
+    private static float squareCoords[] = {   // in counterclockwise order:
+            -0.5f,  0.5f,   // top right
+            -0.5f, -0.5f,   // bottom right
+            0.0f, -0.5f,   // bottom mid
+            -0.5f, -0.5f,   // bottom right
+            0.5f, -0.5f,   // bottom left
+            0.5f,  0.5f,  // top left
+            0.5f,  0.5f,  // top left
+            0.0f,  0.5f,   // top mid
     };
 
     private short drawOrder[] = { 0, 1, 2, 3, 4, 5, 6, 7}; // order to draw vertices
@@ -151,5 +151,45 @@ public class Maze {
         GLES20.glDisableVertexAttribArray(mPositionHandle);
     }
 
+    //Checks if triangle has collided with the maze.
+    public boolean  isCollided(float x, float y, float angle){
+        y = y+0.076f;
+        float test = squareCoords[0];
+
+        float angleRadians = (float) Math.toRadians(angle);
+
+        for(int i=0; i<squareCoords.length/2; i++){
+            float newx1;
+            float newy1;
+
+            newy1 = (float) (squareCoords[i]*Math.cos(angleRadians) - squareCoords[i+1]*Math.sin(angleRadians));
+            newx1 = (float) (squareCoords[i+1]*Math.cos(angleRadians) + squareCoords[i]*Math.sin(angleRadians));
+
+            float newx2;
+            float newy2;
+
+            newx2 = (float) -(squareCoords[i+2]*Math.cos(angleRadians) - squareCoords[i+3]*Math.sin(angleRadians));
+            newy2 = (float) (squareCoords[i+3]*Math.cos(angleRadians) + squareCoords[i+2]*Math.sin(angleRadians));
+
+            //Check if x lies on the line
+            if((x > newx1 && x < newx2) || (x < newx1 && x > newx2)){
+                //Check height of line at given x
+
+                float xLength = newx1 - newx2;
+                float yLength = newy1 - newy2;
+
+                //Find y based on x and angle
+                float xLengthNewTriangle = newx1 - x;
+                float yNewTriangle = (float) (angleRadians * xLengthNewTriangle);
+
+                //Check if y has collided but has not passed already
+                if(y>(yNewTriangle+newy1) && y<(yNewTriangle+newy1+0.116f)){
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 
 }
