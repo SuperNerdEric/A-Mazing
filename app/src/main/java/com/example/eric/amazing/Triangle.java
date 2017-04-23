@@ -1,6 +1,7 @@
 package com.example.eric.amazing;
 
 import android.opengl.GLES20;
+import android.opengl.Matrix;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -39,15 +40,17 @@ public class Triangle {
     // number of coordinates per vertex in this array
     static final int COORDS_PER_VERTEX = 3;
     static float triangleCoords[] = {   // in counterclockwise order:
-            0.0f + 0.5f,  0.622008459f /8  - 0.5f, 0.0f, // top
-            -0.5f /8 + 0.5f , -0.311004243f /8  - 0.5f, 0.0f, // bottom left
-            0.5f /8 + 0.5f, -0.311004243f /8 - 0.5f, 0.0f  // bottom right
+            0.0f,  0.622008459f /8, 0.0f, // top
+            -0.5f /8, -0.311004243f /8, 0.0f, // bottom left
+            0.5f /8, -0.311004243f /8, 0.0f  // bottom right
     };
 
     // Set color with red, green, blue and alpha (opacity) values
     float color[] = { 1.0f, 0.0f, 0.0f, 1.0f };
 
     private final int mProgram;
+
+    public float[] mModelMatrix = new float[16];
 
     public Triangle() {
         // initialize vertex byte buffer for shape coordinates
@@ -68,6 +71,9 @@ public class Triangle {
                 vertexShaderCode);
         int fragmentShader = MyGLRenderer.loadShader(GLES20.GL_FRAGMENT_SHADER,
                 fragmentShaderCode);
+
+        Matrix.setIdentityM(mModelMatrix, 0);
+
 
         // create empty OpenGL ES Program
         mProgram = GLES20.glCreateProgram();
