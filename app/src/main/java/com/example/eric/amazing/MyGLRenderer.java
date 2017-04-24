@@ -42,25 +42,21 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         float[] scratchMaze = new float[16];
 
         // Set the camera position (View matrix)
-        Matrix.setLookAtM(mViewMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+        Matrix.setLookAtM(mViewMatrix, 0, 0, 0, 3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
 
         // Calculate the projection and view transformation
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
 
-        // Create a rotation transformation for the triangle
-        //long time = SystemClock.uptimeMillis() % 4000L;
-        //float angle = 0.090f * ((int) time);
-        //Matrix.setRotateM(mRotationMatrix, 0, angle, 0, 0, -1.0f);
         Matrix.setRotateM(mRotationMatrix, 0, mAngle, 0, 0, -1.0f);
 
         //Move the triangle to the maze entrance
-        Matrix.translateM(mTriangle.mModelMatrix, 0, 0.4f, -0.6f, 0f);
+        Matrix.translateM(mTriangle.mModelMatrix, 0, -0.4f, -0.6f, 0f);
 
         //Continuously move triangle
         Matrix.translateM(mTriangle.mModelMatrix, 0, 0, mTranslate, 0f);
 
-        if(!mMaze.isCollided(0.4f, -0.6f+mTranslate, mAngle)){
+        if(!mMaze.isCollided(-0.4f, -0.6f+mTranslate, mAngle)){
             mTranslate += 0.01f;
         }
         if(mTranslate>1.50f){

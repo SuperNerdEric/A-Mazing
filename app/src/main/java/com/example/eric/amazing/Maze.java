@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
+import java.util.Arrays;
 
 /**
  * Created by Eric on 4/12/2017.
@@ -42,13 +43,13 @@ public class Maze {
     // number of coordinates per vertex in this array
     static final int COORDS_PER_VERTEX = 2;
     private static float squareCoords[] = {
-            -0.5f,  0.5f,   // top right
-            -0.5f, -0.5f,   // bottom right
+            0.5f,  0.5f,   // top right
+            0.5f, -0.5f,   // bottom right
             0.0f, -0.5f,   // bottom mid
-            -0.5f, -0.5f,   // bottom right
-            0.5f, -0.5f,   // bottom left
-            0.5f,  0.5f,  // top left
-            0.5f,  0.5f,  // top left
+            0.5f, -0.5f,   // bottom right
+            -0.5f, -0.5f,   // bottom left
+            -0.5f,  0.5f,  // top left
+            -0.5f,  0.5f,  // top left
             0.0f,  0.5f,   // top mid
     };
 
@@ -157,36 +158,35 @@ public class Maze {
         //Account for height of triangle
         y = y+0.076f;
 
-        float angleRadians = (float) Math.toRadians(angle);
+        float angleRadians = -(float) Math.toRadians(angle);
 
-        for(int i=0; i<squareCoords.length; i+=4){
-            float newx1 = squareCoords[i];
-            float newy1 = squareCoords[i+1];
+        float squareCoordsRotated[] = new float[16];
 
-            /*newx1 = (float) -(-squareCoords[i]*Math.cos(angleRadians) - squareCoords[i+1]*Math.sin(angleRadians));
-            newy1 = (float) (-squareCoords[i+1]*Math.cos(angleRadians) + squareCoords[i]*Math.sin(angleRadians));*/
+        //Create rotated coords
+        for(int i=0; i<squareCoords.length; i+=2){
+            squareCoordsRotated[i] = (float) (squareCoords[i]*Math.cos(angleRadians) - squareCoords[i+1]*Math.sin(angleRadians));
+            squareCoordsRotated[i+1] = (float) (squareCoords[i+1]*Math.cos(angleRadians) + squareCoords[i]*Math.sin(angleRadians));
+        }
+        System.out.println("[TOP RIGHT, BOTTOM RIGHT, BOTTOM MID, BOTTOM RIGHT, BOTTOM LEFT, TOP LEFT, TOP LEFT, TOP MID]");
+        System.out.println(Arrays.toString(squareCoords)+" rotated by " + angle + " degrees" + '\n');
+        System.out.println(Arrays.toString(squareCoordsRotated) + '\n');
 
+        float slopeTest = (squareCoordsRotated[3] - squareCoordsRotated[1]) / (squareCoordsRotated[2] - squareCoordsRotated[0]);
+        System.out.println("TOP RIGHT TO BOTTOM RIGHT HAS SLOPE OF " + slopeTest);
 
-
-            float newx2 = squareCoords[i+2];
-            float newy2 = squareCoords[i+3];
-
-        /*    newx2 = (float) -(-squareCoords[i+2]*Math.cos(angleRadians) - squareCoords[i+3]*Math.sin(angleRadians));
-            newy2 = (float) (-squareCoords[i+3]*Math.cos(angleRadians) + squareCoords[i+2]*Math.sin(angleRadians));*/
+        for(int i=0; i<squareCoordsRotated.length; i+=4) {
 
             //Check if x lies on the line
-            if((x > newx1 && x < newx2) || (x < newx1 && x > newx2)){
-                //Check height of line at given x
+            if ((x>=squareCoordsRotated[i] && x<=squareCoordsRotated[i+2])
+                    || (x<=squareCoordsRotated[i] && x>=squareCoordsRotated[i+2])) {
 
-                float xLength = newx1 - newx2;
-                float yLength = newy1 - newy2;
+                //Check if y is lower than line at given x
 
-                //Find y based on x and angle
-                float xLengthNewTriangle = newx1 - x;
-                float yNewTriangle = (float) (angleRadians * xLengthNewTriangle);
+                //Find slope of line
+                float slope = (squareCoordsRotated[i+3] - squareCoordsRotated[i+1]) / (squareCoordsRotated[i+2] - squareCoordsRotated[i]);
 
-                //Check if y has collided but has not passed already
-                if(y>(yNewTriangle+newy1) && y<(yNewTriangle+newy1+0.116f)){
+                float yAtGivenX = Math.abs(slope*(squareCoordsRotated[i]-x)) + squareCoordsRotated[i+1];
+                if(y>yAtGivenX && y<(yAtGivenX+0.116f)){
                     return true;
                 }
             }
