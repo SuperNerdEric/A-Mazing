@@ -41,7 +41,7 @@ public class Maze {
 
     // number of coordinates per vertex in this array
     static final int COORDS_PER_VERTEX = 2;
-    private static float squareCoords[] = {   // in counterclockwise order:
+    private static float squareCoords[] = {
             -0.5f,  0.5f,   // top right
             -0.5f, -0.5f,   // bottom right
             0.0f, -0.5f,   // bottom mid
@@ -153,23 +153,26 @@ public class Maze {
 
     //Checks if triangle has collided with the maze.
     public boolean  isCollided(float x, float y, float angle){
+
+        //Account for height of triangle
         y = y+0.076f;
-        float test = squareCoords[0];
 
         float angleRadians = (float) Math.toRadians(angle);
 
-        for(int i=0; i<squareCoords.length/2; i++){
-            float newx1;
-            float newy1;
+        for(int i=0; i<squareCoords.length; i+=4){
+            float newx1 = squareCoords[i];
+            float newy1 = squareCoords[i+1];
 
-            newy1 = (float) (squareCoords[i]*Math.cos(angleRadians) - squareCoords[i+1]*Math.sin(angleRadians));
-            newx1 = (float) (squareCoords[i+1]*Math.cos(angleRadians) + squareCoords[i]*Math.sin(angleRadians));
+            /*newx1 = (float) -(-squareCoords[i]*Math.cos(angleRadians) - squareCoords[i+1]*Math.sin(angleRadians));
+            newy1 = (float) (-squareCoords[i+1]*Math.cos(angleRadians) + squareCoords[i]*Math.sin(angleRadians));*/
 
-            float newx2;
-            float newy2;
 
-            newx2 = (float) -(squareCoords[i+2]*Math.cos(angleRadians) - squareCoords[i+3]*Math.sin(angleRadians));
-            newy2 = (float) (squareCoords[i+3]*Math.cos(angleRadians) + squareCoords[i+2]*Math.sin(angleRadians));
+
+            float newx2 = squareCoords[i+2];
+            float newy2 = squareCoords[i+3];
+
+        /*    newx2 = (float) -(-squareCoords[i+2]*Math.cos(angleRadians) - squareCoords[i+3]*Math.sin(angleRadians));
+            newy2 = (float) (-squareCoords[i+3]*Math.cos(angleRadians) + squareCoords[i+2]*Math.sin(angleRadians));*/
 
             //Check if x lies on the line
             if((x > newx1 && x < newx2) || (x < newx1 && x > newx2)){
