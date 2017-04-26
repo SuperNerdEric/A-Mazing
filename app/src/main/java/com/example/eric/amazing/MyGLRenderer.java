@@ -47,20 +47,22 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // Calculate the projection and view transformation
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
-
+        //Rotate the maze to the angle
         Matrix.setRotateM(mRotationMatrix, 0, mAngle, 0, 0, -1.0f);
 
         //Move the triangle to the maze entrance
         Matrix.translateM(mTriangle.mModelMatrix, 0, -0.4f, -0.6f, 0f);
 
         //Continuously move triangle
-        Matrix.translateM(mTriangle.mModelMatrix, 0, 0, mTranslate, 0f);
+        Matrix.translateM(mTriangle.mModelMatrix, 0, mTranslateX, mTranslateY, 0f);
 
-        if(!mMaze.isCollided(-0.4f, -0.6f+mTranslate, mAngle)){
-            mTranslate += 0.01f;
+        if(!mMaze.isCollided(-0.4f+ mTranslateX, -0.6f+ mTranslateY, mAngle)){
+            mTranslateY += 0.01f;
         }
-        if(mTranslate>1.50f){
-            mTranslate = 0.0f;
+        if(mTranslateY >1.50f){
+            mTranslateY = 0.0f;
+            mTranslateX = 0.0f;
+            this.setAngle(0);
         }
 
         Matrix.multiplyMM(scratchMaze, 0, mMVPMatrix, 0, mRotationMatrix, 0);
@@ -120,14 +122,40 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mAngle = angle;
     }
 
-    private volatile float mTranslate;
+    private volatile float mTranslateY;
 
-    public float getmTranslate() {
-        return mTranslate;
+    public float getmTranslateX() {
+        return mTranslateX;
     }
 
-    public void setmTranslate(float mTranslate) {
-        this.mTranslate = mTranslate;
+    public void setmTranslateX(float mTranslateX) {
+        this.mTranslateX = mTranslateX;
+    }
+
+    private volatile float mTranslateX;
+
+    public float getmTranslateY() {
+        return mTranslateY;
+    }
+
+    public void setmTranslateY(float mTranslateY) {
+        this.mTranslateY = mTranslateY;
+    }
+
+    public void translateTriangleBasedOnAngle(float angle){
+        float angleRadians = -(float) Math.toRadians(angle);
+
+        float newX;
+        float newY;
+
+        newX = (float) ((mTranslateX-0.4f)*Math.cos(angleRadians) - (mTranslateY-0.6f)*Math.sin(angleRadians));
+        mTranslateX = newX + 0.4f;
+
+        newY = (float) ((mTranslateY-0.6f)*Math.cos(angleRadians) + (mTranslateX-0.4f)*Math.sin(angleRadians));
+        mTranslateY = newY + 0.6f;
+
+        //Move triangle by amount
+        //Matrix.translateM(mTriangle.mModelMatrix, 0, newX, newY, 0f);
     }
 
 }
