@@ -53,9 +53,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         //Move the triangle to the maze entrance
         Matrix.translateM(mTriangle.mModelMatrix, 0, -0.4f, -0.6f, 0f);
 
-        //Continuously move triangle
+        //Translate triangle to its current position
         Matrix.translateM(mTriangle.mModelMatrix, 0, mTranslateX, mTranslateY, 0f);
 
+        //Automatically move triangle up unless colliding with a wall
         if(!mMaze.isCollided(-0.4f+ mTranslateX, -0.6f+ mTranslateY, mAngle)){
             mTranslateY += 0.01f;
         }
@@ -122,40 +123,19 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mAngle = angle;
     }
 
+    //Triangles current positions relative to starting position
+    private volatile float mTranslateX;
     private volatile float mTranslateY;
 
-    public float getmTranslateX() {
-        return mTranslateX;
-    }
-
-    public void setmTranslateX(float mTranslateX) {
-        this.mTranslateX = mTranslateX;
-    }
-
-    private volatile float mTranslateX;
-
-    public float getmTranslateY() {
-        return mTranslateY;
-    }
-
-    public void setmTranslateY(float mTranslateY) {
-        this.mTranslateY = mTranslateY;
-    }
-
+    //When rotating the maze the triangle will be translated to stay in the same position inside of the maze
     public void translateTriangleBasedOnAngle(float angle){
         float angleRadians = -(float) Math.toRadians(angle);
 
-        float newX;
-        float newY;
+        double newX = ((mTranslateX-0.4f)*Math.cos(angleRadians) - (mTranslateY-0.6f)*Math.sin(angleRadians));
+        double newY = ((mTranslateY-0.6f)*Math.cos(angleRadians) + (mTranslateX-0.4f)*Math.sin(angleRadians));
 
-        newX = (float) ((mTranslateX-0.4f)*Math.cos(angleRadians) - (mTranslateY-0.6f)*Math.sin(angleRadians));
-        mTranslateX = newX + 0.4f;
-
-        newY = (float) ((mTranslateY-0.6f)*Math.cos(angleRadians) + (mTranslateX-0.4f)*Math.sin(angleRadians));
-        mTranslateY = newY + 0.6f;
-
-        //Move triangle by amount
-        //Matrix.translateM(mTriangle.mModelMatrix, 0, newX, newY, 0f);
+        mTranslateX = (float) (newX + 0.4f);
+        mTranslateY = (float) (newY + 0.6f);
     }
 
 }
