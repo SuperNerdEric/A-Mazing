@@ -15,6 +15,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     private Triangle mTriangle;
     private Maze mMaze;
+    private StartBlock mStartBlock;
+    private FinishBlock mFinishBlock;
 
 
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
@@ -28,8 +30,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mMaze = new Maze();
     }
 
-    private float[] mRotationMatrix = new float[16];
-    private float[] mRotationMatrix2 = new float[16];
+    private float[] mRotationMatrixMaze = new float[16];
+    private float[] mRotationMatrixStartBlock = new float[16];
+    private float[] mRotationMatrixFinishBlock = new float[16];
 
     public void onDrawFrame(GL10 unused) {
         // Redraw background color
@@ -41,6 +44,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mMaze = new Maze();
         float[] scratchMaze = new float[16];
 
+        mStartBlock = new StartBlock();
+        float[] scratchStartBlock = new float[16];
+
+        mFinishBlock = new FinishBlock();
+        float[] scratchFinishBlock = new float[16];
+
         // Set the camera position (View matrix)
         Matrix.setLookAtM(mViewMatrix, 0, 0, 0, 3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
 
@@ -48,7 +57,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
         //Rotate the maze to the angle
-        Matrix.setRotateM(mRotationMatrix, 0, mAngle, 0, 0, -1.0f);
+        Matrix.setRotateM(mRotationMatrixMaze, 0, mAngle, 0, 0, -1.0f);
+
+        //Set start block rotation
+        Matrix.setRotateM(mRotationMatrixStartBlock, 0, mAngle, 0, 0, -1.0f);
+
+        //Set finish block rotation
+        Matrix.setRotateM(mRotationMatrixFinishBlock, 0, mAngle, 0, 0, -1.0f);
 
         //Move the triangle to the maze entrance
         Matrix.translateM(mTriangle.mModelMatrix, 0, -0.4f, -0.6f, 0f);
@@ -66,7 +81,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             this.setAngle(0);
         }
 
-        Matrix.multiplyMM(scratchMaze, 0, mMVPMatrix, 0, mRotationMatrix, 0);
+        Matrix.multiplyMM(scratchMaze, 0, mMVPMatrix, 0, mRotationMatrixMaze, 0);
 
         // Combine the model's translation & rotation matrix
         // with the projection and camera view
@@ -74,10 +89,19 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // for the matrix multiplication product to be correct.
         Matrix.multiplyMM(scratchTriangle, 0, mMVPMatrix, 0, mTriangle.mModelMatrix, 0);
 
+        Matrix.multiplyMM(scratchStartBlock, 0, mMVPMatrix, 0, mRotationMatrixStartBlock, 0);
+        Matrix.multiplyMM(scratchFinishBlock, 0, mMVPMatrix, 0, mRotationMatrixStartBlock, 0);
+
+        //Draw start block
+        mStartBlock.draw(scratchStartBlock);
+
+        //Draw finish block
+        mFinishBlock.draw(scratchFinishBlock);
+
         //Draw maze
         mMaze.draw(scratchMaze);
 
-        // Draw triangle
+        //Draw triangle
         mTriangle.draw(scratchTriangle);
     }
 

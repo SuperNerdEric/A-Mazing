@@ -100,10 +100,6 @@ public class Maze {
 
         // creates OpenGL ES program executables
         GLES20.glLinkProgram(mProgram);
-
-
-
-
     }
 
     private int mPositionHandle;
@@ -134,15 +130,13 @@ public class Maze {
         // Set color for drawing the maze
         GLES20.glUniform4fv(mColorHandle, 1, color, 0);
 
-        GLES20.glLineWidth(2);
-
         // get handle to shape's transformation matrix
         mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
 
         // Pass the projection and view transformation to the shader
         GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
 
-        GLES20.glLineWidth(30);
+        GLES20.glLineWidth(35);
 
         // Draw the maze
         GLES20.glDrawElements(GLES20.GL_LINES, drawOrder.length,
@@ -186,7 +180,7 @@ public class Maze {
                 float slope = (squareCoordsRotated[i+3] - squareCoordsRotated[i+1]) / (squareCoordsRotated[i+2] - squareCoordsRotated[i]);
 
                 float yAtGivenX = Math.abs(slope*(squareCoordsRotated[i]-x)) + squareCoordsRotated[i+1];
-                if(y>yAtGivenX && y<(yAtGivenX+0.116f)){
+                if(y>=(yAtGivenX-0.01f) && y<(yAtGivenX+0.116f)){
                     return true;
                 }
             }
