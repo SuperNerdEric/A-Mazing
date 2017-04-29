@@ -6,7 +6,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
-import java.util.Arrays;
 
 /**
  * Created by Eric on 4/12/2017.
@@ -51,6 +50,11 @@ public class Maze {
             -0.5f,  0.5f,  // top left
             -0.5f,  0.5f,  // top left
             0.0f,  0.5f,   // top mid
+    };
+
+    private static float winCoords[] = {
+            0.0f,  0.5f,   // top mid
+            0.5f,  0.5f,   // top right
     };
 
     private short drawOrder[] = { 0, 1, 2, 3, 4, 5, 6, 7}; // order to draw vertices
@@ -161,12 +165,12 @@ public class Maze {
             squareCoordsRotated[i] = (float) (squareCoords[i]*Math.cos(angleRadians) - squareCoords[i+1]*Math.sin(angleRadians));
             squareCoordsRotated[i+1] = (float) (squareCoords[i+1]*Math.cos(angleRadians) + squareCoords[i]*Math.sin(angleRadians));
         }
-        System.out.println("[TOP RIGHT, BOTTOM RIGHT, BOTTOM MID, BOTTOM RIGHT, BOTTOM LEFT, TOP LEFT, TOP LEFT, TOP MID]");
+        /*System.out.println("[TOP RIGHT, BOTTOM RIGHT, BOTTOM MID, BOTTOM RIGHT, BOTTOM LEFT, TOP LEFT, TOP LEFT, TOP MID]");
         System.out.println(Arrays.toString(squareCoords)+" rotated by " + angle + " degrees" + '\n');
         System.out.println(Arrays.toString(squareCoordsRotated) + '\n');
 
         float slopeTest = (squareCoordsRotated[3] - squareCoordsRotated[1]) / (squareCoordsRotated[2] - squareCoordsRotated[0]);
-        System.out.println("TOP RIGHT TO BOTTOM RIGHT HAS SLOPE OF " + slopeTest);
+        System.out.println("TOP RIGHT TO BOTTOM RIGHT HAS SLOPE OF " + slopeTest);*/
 
         for(int i=0; i<squareCoordsRotated.length; i+=4) {
 
@@ -180,6 +184,43 @@ public class Maze {
                 float slope = (squareCoordsRotated[i+3] - squareCoordsRotated[i+1]) / (squareCoordsRotated[i+2] - squareCoordsRotated[i]);
 
                 float yAtGivenX = Math.abs(slope*(squareCoordsRotated[i]-x)) + squareCoordsRotated[i+1];
+                if(y>=(yAtGivenX-0.01f) && y<(yAtGivenX+0.116f)){
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    //Checks if triangle has completed the maze.
+    public boolean  hasWon(float x, float y, float angle){
+
+        //Account for height of triangle
+        y = y+0.076f;
+
+        float angleRadians = -(float) Math.toRadians(angle);
+
+        float winCoordsRotated[] = new float[16];
+
+        //Create rotated coords
+        for(int i=0; i<winCoords.length; i+=2){
+            winCoordsRotated[i] = (float) (winCoords[i]*Math.cos(angleRadians) - winCoords[i+1]*Math.sin(angleRadians));
+            winCoordsRotated[i+1] = (float) (winCoords[i+1]*Math.cos(angleRadians) + winCoords[i]*Math.sin(angleRadians));
+        }
+
+        for(int i=0; i<winCoordsRotated.length; i+=4) {
+
+            //Check if x lies on the line
+            if ((x>=winCoordsRotated[i] && x<=winCoordsRotated[i+2])
+                    || (x<=winCoordsRotated[i] && x>=winCoordsRotated[i+2])) {
+
+                //Check if y is lower than line at given x
+
+                //Find slope of line
+                float slope = (winCoordsRotated[i+3] - winCoordsRotated[i+1]) / (winCoordsRotated[i+2] - winCoordsRotated[i]);
+
+                float yAtGivenX = Math.abs(slope*(winCoordsRotated[i]-x)) + winCoordsRotated[i+1];
                 if(y>=(yAtGivenX-0.01f) && y<(yAtGivenX+0.116f)){
                     return true;
                 }
