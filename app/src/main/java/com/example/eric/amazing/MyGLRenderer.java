@@ -1,12 +1,9 @@
 package com.example.eric.amazing;
 
-import android.content.Context;
 import android.opengl.EGLConfig;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
-import android.os.Handler;
-import android.os.Message;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -76,12 +73,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         //Check for win
         if(mMaze.hasWon(-0.4f+ mTranslateX, -0.6f+ mTranslateY, mAngle)){
-                Message message = new Message();
-                message.what = DialogHandler.OPEN_ANNOTATION;
 
-                // Here you can create a Bundle in order to pass more data inside the Message
-                DialogHandler dialogHandler = new DialogHandler();
-                dialogHandler.sendMessage(message);
         } else {
             //Automatically move triangle up unless colliding with a wall
             if (!mMaze.isCollided(-0.4f + mTranslateX, -0.6f + mTranslateY, mAngle)) {
@@ -116,19 +108,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         //Draw triangle
         mTriangle.draw(scratchTriangle);
-    }
-
-    public class DialogHandler extends Handler {
-        public static final int OPEN_ANNOTATION = 2;
-
-
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what == OPEN_ANNOTATION) {
-                Context context = MainActivity.getContext();
-                new Popup(context, msg);
-            }
-        }
     }
 
     @Override

@@ -3,14 +3,8 @@ package com.example.eric.amazing;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.PopupWindow;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
         // Create a GLSurfaceView instance and set it
         // as the ContentView for this Activity.
         mGLView = new MainActivity.MyGLSurfaceView(this);
+
         setContentView(mGLView);
     }
 
@@ -86,23 +81,5 @@ public class MainActivity extends AppCompatActivity {
             mPreviousY = y;
             return true;
         }
-    }
-
-    public void popupWindow() {
-        PopupWindow pw;
-        LayoutInflater inflater = (LayoutInflater) MainActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        View layout = inflater.inflate(R.layout.finish_popup, (ViewGroup) findViewById(R.id.activity_main));
-
-        pw = new PopupWindow(layout, ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.WRAP_CONTENT, true);
-        pw.showAtLocation(layout, Gravity.CENTER, 0, 0);
-
-        // Get your Buttons and other tags here
-
-    }
-
-    public static Context getContext(){
-        return getContext();
-        // or return instance.getApplicationContext();
     }
 }

@@ -33,6 +33,8 @@ public class OpenGLES20Activity extends Activity {
 
             // Set the Renderer for drawing on the GLSurfaceView
             setRenderer(mRenderer);
+
+
         }
     }
 
