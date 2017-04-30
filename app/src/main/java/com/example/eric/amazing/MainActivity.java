@@ -1,14 +1,22 @@
 package com.example.eric.amazing;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+
 public class MainActivity extends AppCompatActivity {
 
     private GLSurfaceView mGLView;
+    public static InputStream is;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -17,6 +25,13 @@ public class MainActivity extends AppCompatActivity {
         // Create a GLSurfaceView instance and set it
         // as the ContentView for this Activity.
         mGLView = new MainActivity.MyGLSurfaceView(this);
+
+        Drawable drawable = getResources().getDrawable(R.drawable.you_win);
+        BitmapDrawable bitmapDrawable = ((BitmapDrawable) drawable);
+        Bitmap bitmap = bitmapDrawable.getBitmap();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream); //use the compression format of your need
+        is = new ByteArrayInputStream(stream.toByteArray());
 
         setContentView(mGLView);
     }

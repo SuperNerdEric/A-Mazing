@@ -5,7 +5,13 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
+
 import javax.microedition.khronos.opengles.GL10;
+
+import de.matthiasmann.twl.utils.PNGDecoder;
 
 /**
  * Created by Eric on 4/12/2017.
@@ -74,6 +80,27 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         //Check for win
         if(mMaze.hasWon(-0.4f+ mTranslateX, -0.6f+ mTranslateY, mAngle)){
 
+            InputStream in = MainActivity.is;
+
+            try {
+                PNGDecoder decoder = new PNGDecoder(in);
+
+                System.out.println("width="+decoder.getWidth());
+                System.out.println("height="+decoder.getHeight());
+
+                ByteBuffer buf = ByteBuffer.allocateDirect(4*decoder.getWidth()*decoder.getHeight());
+                decoder.decode(buf, decoder.getWidth()*4, PNGDecoder.Format.RGBA);
+                buf.flip();
+                unused.glTexImage2D(unused.GL_TEXTURE_2D, 0, unused.GL_RGBA, decoder.getWidth(), decoder.getHeight(), 0, unused.GL_RGBA, unused.GL_UNSIGNED_BYTE, buf);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         } else {
             //Automatically move triangle up unless colliding with a wall
             if (!mMaze.isCollided(-0.4f + mTranslateX, -0.6f + mTranslateY, mAngle)) {
