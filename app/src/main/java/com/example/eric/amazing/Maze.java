@@ -151,7 +151,7 @@ public class Maze {
     }
 
     //Checks if triangle has collided with the maze.
-    public boolean  isCollided(float x, float y, float angle){
+    public boolean isColliding(float x, float y, float angle){
 
         //Account for height of triangle
         y = y+0.076f;

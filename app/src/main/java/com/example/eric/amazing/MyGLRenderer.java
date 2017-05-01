@@ -1,17 +1,11 @@
 package com.example.eric.amazing;
 
-import android.opengl.EGLConfig;
+import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-
 import javax.microedition.khronos.opengles.GL10;
-
-import de.matthiasmann.twl.utils.PNGDecoder;
 
 /**
  * Created by Eric on 4/12/2017.
@@ -23,31 +17,44 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private Maze mMaze;
     private StartBlock mStartBlock;
     private FinishBlock mFinishBlock;
+    private WinMessage winMessage;
+    private final Context mActivityContext;
 
+    public MyGLRenderer(final Context activityContext)
+    {
+        mActivityContext = activityContext;
+    }
 
-    public void onSurfaceCreated(GL10 unused, EGLConfig config) {
+    @Override
+    public void onSurfaceCreated(GL10 gl, javax.microedition.khronos.egl.EGLConfig config) {
         // Set the background frame color
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
         // initialize a triangle
-        mTriangle = new Triangle();
+        //mTriangle = new Triangle();
 
         // initialize a maze
         mMaze = new Maze();
+
+        winMessage = new WinMessage(mActivityContext);
+
+        gl.glEnable(GL10.GL_TEXTURE_2D);
+
     }
 
     private float[] mRotationMatrixMaze = new float[16];
     private float[] mRotationMatrixStartBlock = new float[16];
     private float[] mRotationMatrixFinishBlock = new float[16];
 
-    public void onDrawFrame(GL10 unused) {
+    public void onDrawFrame(GL10 gl) {
+
+
         // Redraw background color
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
         GLES20.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         mTriangle = new Triangle();
         float[] scratchTriangle = new float[16];
 
-        mMaze = new Maze();
         float[] scratchMaze = new float[16];
 
         mStartBlock = new StartBlock();
@@ -77,40 +84,14 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         //Translate triangle to its current position
         Matrix.translateM(mTriangle.mModelMatrix, 0, mTranslateX, mTranslateY, 0f);
 
-        //Check for win
-        if(mMaze.hasWon(-0.4f+ mTranslateX, -0.6f+ mTranslateY, mAngle)){
-
-            InputStream in = MainActivity.is;
-
-            try {
-                PNGDecoder decoder = new PNGDecoder(in);
-
-                System.out.println("width="+decoder.getWidth());
-                System.out.println("height="+decoder.getHeight());
-
-                ByteBuffer buf = ByteBuffer.allocateDirect(4*decoder.getWidth()*decoder.getHeight());
-                decoder.decode(buf, decoder.getWidth()*4, PNGDecoder.Format.RGBA);
-                buf.flip();
-                unused.glTexImage2D(unused.GL_TEXTURE_2D, 0, unused.GL_RGBA, decoder.getWidth(), decoder.getHeight(), 0, unused.GL_RGBA, unused.GL_UNSIGNED_BYTE, buf);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        } else {
-            //Automatically move triangle up unless colliding with a wall
-            if (!mMaze.isCollided(-0.4f + mTranslateX, -0.6f + mTranslateY, mAngle)) {
-                mTranslateY += 0.01f;
-            }
-            if (mTranslateY > 1.50f) {
-                mTranslateY = 0.0f;
-                mTranslateX = 0.0f;
-                this.setAngle(0);
-            }
+        //Automatically move triangle up unless colliding with a wall
+        if (!mMaze.isColliding(-0.4f + mTranslateX, -0.6f + mTranslateY, mAngle) && !mMaze.hasWon(-0.4f+ mTranslateX, -0.6f+ mTranslateY, mAngle)) {
+            mTranslateY += 0.01f;
+        }
+        if (mTranslateY > 1.50f) {
+            mTranslateY = 0.0f;
+            mTranslateX = 0.0f;
+            this.setAngle(0);
         }
 
         Matrix.multiplyMM(scratchMaze, 0, mMVPMatrix, 0, mRotationMatrixMaze, 0);
@@ -135,11 +116,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         //Draw triangle
         mTriangle.draw(scratchTriangle);
-    }
 
-    @Override
-    public void onSurfaceCreated(GL10 gl, javax.microedition.khronos.egl.EGLConfig config) {
-
+        //Check for win
+        if(mMaze.hasWon(-0.4f+ mTranslateX, -0.6f+ mTranslateY, mAngle)){
+            winMessage.Draw(mMVPMatrix);
+        }
     }
 
     // mMVPMatrix is an abbreviation for "Model View Projection Matrix"
