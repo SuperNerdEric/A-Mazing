@@ -175,4 +175,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mTranslateY = (float) (newY + 0.6f);
     }
 
+    public boolean hasWon(){
+        return mMaze.hasWon(-0.4f+ mTranslateX, -0.6f+ mTranslateY, mAngle);
+    }
+
 }
