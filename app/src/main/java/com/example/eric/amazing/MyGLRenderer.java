@@ -81,6 +81,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         //Move the triangle to the maze entrance
         Matrix.translateM(mTriangle.mModelMatrix, 0, -0.4f, -0.6f, 0f);
 
+        //mTranslateX = 0.11155953f;
+        //mTranslateY = 0.68898004f;
+
         //Translate triangle to its current position
         Matrix.translateM(mTriangle.mModelMatrix, 0, mTranslateX, mTranslateY, 0f);
 

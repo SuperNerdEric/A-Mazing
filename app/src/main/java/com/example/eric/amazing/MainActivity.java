@@ -80,9 +80,10 @@ public class MainActivity extends AppCompatActivity {
                     if(!mRenderer.hasWon()){
                         mRenderer.translateTriangleBasedOnAngle((dx + dy) * TOUCH_SCALE_FACTOR);
 
-                        mRenderer.setAngle(
+                       mRenderer.setAngle(
                                 mRenderer.getAngle() +
                                         ((dx + dy) * TOUCH_SCALE_FACTOR));
+                        //mRenderer.setAngle(-296.47f);
                     }
 
                     requestRender();

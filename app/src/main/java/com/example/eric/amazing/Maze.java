@@ -180,10 +180,19 @@ public class Maze {
 
                 //Check if y is lower than line at given x
 
+
+
+
                 //Find slope of line
                 float slope = (squareCoordsRotated[i+3] - squareCoordsRotated[i+1]) / (squareCoordsRotated[i+2] - squareCoordsRotated[i]);
 
-                float yAtGivenX = Math.abs(slope*(squareCoordsRotated[i]-x)) + squareCoordsRotated[i+1];
+                float yAtGivenX;
+                if(squareCoordsRotated[i+2] < squareCoordsRotated[i]){
+                    yAtGivenX  = slope*Math.abs(squareCoordsRotated[i+2] - x) + squareCoordsRotated[i+3];
+                } else {
+                    yAtGivenX = slope * Math.abs(squareCoordsRotated[i] - x) + squareCoordsRotated[i + 1];
+                }
+
                 if(y>=(yAtGivenX-0.01f) && y<(yAtGivenX+0.116f)){
                     return true;
                 }
@@ -220,7 +229,14 @@ public class Maze {
                 //Find slope of line
                 float slope = (winCoordsRotated[i+3] - winCoordsRotated[i+1]) / (winCoordsRotated[i+2] - winCoordsRotated[i]);
 
-                float yAtGivenX = Math.abs(slope*(winCoordsRotated[i]-x)) + winCoordsRotated[i+1];
+
+                float yAtGivenX;
+                if(winCoordsRotated[i+2] < winCoordsRotated[i]){
+                    yAtGivenX  = slope*Math.abs(winCoordsRotated[i+2] - x) + winCoordsRotated[i+3];
+                } else {
+                    yAtGivenX = slope * Math.abs(winCoordsRotated[i] - x) + winCoordsRotated[i + 1];
+                }
+
                 if(y>=(yAtGivenX-0.01f) && y<(yAtGivenX+0.116f)){
                     return true;
                 }
