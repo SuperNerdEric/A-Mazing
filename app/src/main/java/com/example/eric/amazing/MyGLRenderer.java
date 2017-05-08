@@ -4,6 +4,7 @@ import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.os.Message;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -19,10 +20,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private FinishBlock mFinishBlock;
     private WinMessage winMessage;
     private final Context mActivityContext;
+    MainActivity.LooperThread looper;
 
-    public MyGLRenderer(final Context activityContext)
-    {
+    public MyGLRenderer(final Context activityContext, MainActivity.LooperThread looper) {
+
         mActivityContext = activityContext;
+        this.looper = looper;
     }
 
     @Override
@@ -180,6 +183,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     public boolean hasWon(){
         return mMaze.hasWon(-0.4f+ mTranslateX, -0.6f+ mTranslateY, mAngle);
+    }
+
+    public void restart(){
+        mTranslateY = 0.0f;
+        mTranslateX = 0.0f;
+        this.setAngle(0);
     }
 
 }

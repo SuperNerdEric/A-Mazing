@@ -57,7 +57,7 @@ public class Maze {
             0.5f,  0.5f,   // top right
     };
 
-    private short drawOrder[] = { 0, 1, 2, 3, 4, 5, 6, 7}; // order to draw vertices
+    private short drawOrder[] = new short[squareCoords.length/2];
 
     // Set color with red, green, blue and alpha (opacity) values
     float color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
@@ -65,6 +65,11 @@ public class Maze {
     private final int mProgram;
 
     public Maze() {
+        for(int i=0; i<drawOrder.length; i++){
+            // order to draw vertices
+            drawOrder[i] = (short) i;
+        }
+
         // initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(
                 // (number of coordinate values * 4 bytes per float)
@@ -158,7 +163,7 @@ public class Maze {
 
         float angleRadians = -(float) Math.toRadians(angle);
 
-        float squareCoordsRotated[] = new float[16];
+        float squareCoordsRotated[] = new float[squareCoords.length];
 
         //Create rotated coords
         for(int i=0; i<squareCoords.length; i+=2){
