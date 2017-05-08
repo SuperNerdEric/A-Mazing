@@ -25,7 +25,17 @@ public class MainActivity extends AppCompatActivity {
         looper.start();
 
         mGLView = new MyGLSurfaceView(this, looper);
+        button = new Button(getApplicationContext());
+        button.setText("Play Again");
 
+        button.setOnClickListener( new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                MyGLSurfaceView.restart();
+                button.setVisibility(View.GONE);
+            }
+        });
 
         setContentView(mGLView);
     }
@@ -39,19 +49,18 @@ public class MainActivity extends AppCompatActivity {
             mHandler = new Handler() {
                 public void handleMessage(Message msg) {
                     if(msg.obj.equals(true)) {
-                        button = new Button(getApplicationContext());
-                        button.setText("Play Again");
 
-                        button.setOnClickListener( new View.OnClickListener() {
-
-                            @Override
-                            public void onClick(View v) {
-                                MyGLSurfaceView.restart();
-                            }
-                        });
+                        ViewGroup test =((ViewGroup) button.getParent());
+                        if(test!=null){
+                            test.removeView(button);
+                        }
                         addContentView(button, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                        button.setVisibility(View.VISIBLE);
                     } else {
-                        button = null;
+                        ViewGroup test =((ViewGroup) button.getParent());
+                        if(test!=null){
+                            test.removeView(button);
+                        }
                     }
                 }
             };
